@@ -37,7 +37,7 @@ namespace AnalysisSentimental.Service
         private static ITransformer BuildAndTrainModel(IDataView splitTrainSet)
         {
             var estimator = Context.Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: nameof(SentimentData.SentimentText))
-                                                   .Append(Context.BinaryClassification.Trainers.FastTree(labelColumnName: "Label", featureColumnName: "Features"));
+                                                   .Append(Context.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features"));
 
             //Create and Train the model
             var model = estimator.Fit(splitTrainSet);
@@ -62,8 +62,5 @@ namespace AnalysisSentimental.Service
 
             return engine.Predict(new SentimentData() { SentimentText = text });
         }
-
-
-
     }
 }
