@@ -1,4 +1,5 @@
 ﻿using Microsoft.ML;
+using SentimentAnalysis.Service;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Microsoft.ML.DataOperationsCatalog;
 
-namespace AnalysisSentimental.Service
+namespace SentimentAnalysis.Service
 {
     public static class SentimentAnalysis
     {
@@ -30,14 +31,14 @@ namespace AnalysisSentimental.Service
         private static TrainTestData LoadData()
         {
             IDataView dataView = Context.Data.LoadFromTextFile<SentimentData>(_dataPath, hasHeader: false);
-            TrainTestData splitDataView = Context.Data.TrainTestSplit(dataView, testFraction: 0.35);
+            TrainTestData splitDataView = Context.Data.TrainTestSplit(dataView, testFraction: 0.55);
             return splitDataView;
         }
 
         private static ITransformer BuildAndTrainModel(IDataView splitTrainSet)
         {
             var estimator = Context.Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: nameof(SentimentData.SentimentText))
-                                                   .Append(Context.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features"));
+                                                   .Append(Context.BinaryClassification.Trainers.FastTree(labelColumnName: "Label", featureColumnName: "Features"));
 
             //Create and Train the model
             var model = estimator.Fit(splitTrainSet);

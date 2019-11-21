@@ -3,16 +3,16 @@
 <h1>Sentiment Analysis Scale</h1>
 <p>Diga como se sente.</p>
 
-<p><textarea oninput=@UpdateScore cols="80"></textarea></p>
+<p><textarea @oninput="UpdateScore" cols="80"></textarea></p>
 
 <AnalysisSentimentScale Value=@happiness />
 
 @functions {
     float happiness = 50;
 
-    void UpdateScore(UIChangeEventArgs evt)
+    public void UpdateScore(ChangeEventArgs evt)
     {
         var text = (string)evt.Value;
-        happiness = AnalysisSentimental.Service.SentimentAnalysis.GetPrediction(text).Percentage;
+        happiness = SentimentAnalysis.Service.SentimentAnalysis.GetPrediction(text).Percentage;
     }
 }
